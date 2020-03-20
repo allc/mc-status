@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>MC Server Status</title>
+</head>
+<body>
+  <div class="container">
+    <h1>MC Server Status</h1>
+    <div id="Status">
+      <div id="JsAlert" class="alert alert-danger">Javascript is required.</div>
+      <div id="LoadingStatus" hidden></div>
+      <table id="StatusTable" class="table" hidden>
+        <tbody>
+          <tr>
+            <th scope="row">MOTD</th>
+            <td id="Motd"></td>
+          </tr>
+          <tr>
+            <th scope="row">Version</th>
+            <td id="Version"></td>
+          </tr>
+          <tr>
+            <th scope="row">Plugins</th>
+            <td id="Plugins"></td>
+          </tr>
+          <tr>
+            <th scope="row">Map</th>
+            <td id="Map"></td>
+          </tr>
+          <tr>
+            <th scope="row">Number of online players</th>
+            <td id="NumPlayers"></td>
+          </tr>
+          <tr>
+            <th scope="row">Max number of players</th>
+            <td id="MaxPlayers"></td>
+          </tr>
+          <tr>
+            <th scope="row">Players</th>
+            <td>
+              <ul id="PlayersList"></ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="Message" hidden></div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
+  <script>
+    $('#JsAlert').hide();
+    $('#LoadingStatus').removeAttr('hidden');
+    $('#LoadingStatus').text('Loading...');
+    $.get('/status').done(function(data) {
+      $('#LoadingStatus').attr('hidden', 'hidden');
+      $('#StatusTable').removeAttr('hidden');
+      $('#Motd').text(data['MOTD']);
+      $('#Version').text(data['Version']);
+      $('#Plugins').text(data['Plugins']);
+      $('#Map').text(data['Map']);
+      $('#NumPlayers').text(data['Number of online players']);
+      $('#MaxPlayers').text(data['Max number of players']);
+      data['Players'].forEach(element => {
+        $('<li></li>').text(element).appendTo('#PlayersList');
+      });
+      $('#Message').removeAttr('hidden');
+      if (data['Players'].length === 1) {
+        $('#Message').text(data['Players'][0] + ' is the only player on this server and might feel lonely.');
+      }
+    }).fail(function() {
+      $('#LoadingStatus').text('Failed to load.')
+    });
+  </script>
+</body>
+</html>

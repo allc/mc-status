@@ -1,0 +1,2 @@
+MC_SERVER = 'localhost'
+QUERY_PORT = 25565
